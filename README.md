@@ -75,11 +75,14 @@ npm run build      # production build
 ```
 
 By default the dashboard runs in local-demo mode (browser storage). To connect a
-real backend, set the API URL:
+real backend, set the API URL and, if using Supabase OAuth, the Supabase client
+configuration:
 
 ```bash
 # .env
 VITE_API_URL=https://api.machinarc.com
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 ```
 
 ### Backend

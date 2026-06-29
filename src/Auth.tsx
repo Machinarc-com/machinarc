@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { continueWithGoogle, login, register, resetPassword, type Session } from "./store";
+import { login, register, resetPassword, type Session } from "./store";
 import { ApiError, api, apiEnabled, setToken } from "./api";
 import { supabase } from "./supabase";
 import { LogoMark } from "./Logo";
