@@ -31,13 +31,13 @@ export default function App() {
   }, [view]);
 
   useEffect(() => {
-    if (!apiEnabled) return;
-
     const path = new URL(window.location.href).pathname;
     if (path === "/auth/callback") {
       setView("callback");
       return;
     }
+
+    if (!apiEnabled) return;
 
     const match = window.location.hash.match(/token=([^&]+)/);
     if (match) {

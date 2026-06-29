@@ -100,20 +100,7 @@ export default function Auth({
       return;
     }
 
-    if (apiEnabled) {
-      window.location.href = api.googleStartUrl();
-      return;
-    }
-
-    const guess = email.trim() || "you@gmail.com";
-    const input = window.prompt("Continue with Google — enter your Google email", guess);
-    if (!input) return;
-    const res = continueWithGoogle(input);
-    if (!res.ok || !res.session) {
-      setError("Could not continue with Google.");
-      return;
-    }
-    onSignIn(res.session);
+    setError("Google sign-in is not configured. Please set Supabase env vars.");
   };
 
   return (
