@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Landing from "./Landing";
 import Auth from "./Auth";
-import AuthAuthorize from "./AuthAuthorize";
 import AuthCallback from "./AuthCallback";
 import Dashboard from "./Dashboard";
 import Roadmap from "./Roadmap";
@@ -11,7 +10,7 @@ import { getSession, signOut, type Session } from "./store";
 import { api, apiEnabled, clearToken, setToken } from "./api";
 import ThemeToggle from "./ThemeToggle";
 
-type View = "landing" | "auth" | "authorize" | "callback" | "app" | "roadmap" | "docs" | "terms" | "privacy";
+type View = "landing" | "auth" | "callback" | "app" | "roadmap" | "docs" | "terms" | "privacy";
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(() => getSession());
@@ -38,7 +37,12 @@ export default function App() {
       return;
     }
     if (path === "/auth/authorize") {
-      setView("authorize");
+      if (getSession()) {
+        setView("app");
+      } else {
+        setAuthMode("signin");
+        setView("auth");
+      }
       return;
     }
 
@@ -86,15 +90,6 @@ export default function App() {
       <Auth
         initialMode={authMode}
         onBack={() => setView("landing")}
-        onSignIn={(s) => {
-          setSession(s);
-          setView("app");
-        }}
-      />
-    );
-  } else if (view === "authorize") {
-    screen = (
-      <AuthAuthorize
         onSignIn={(s) => {
           setSession(s);
           setView("app");
