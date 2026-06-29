@@ -115,8 +115,11 @@ export default function App() {
   } else {
     screen = (
       <Landing
-          onSignUp={goExternalAuth}
-          onSignIn={goExternalAuth}
+        onSignUp={goExternalAuth}
+        onSignIn={goExternalAuth}
+        onRoadmap={() => setView("roadmap")}
+        onDocs={() => setView("docs")}
+        onTerms={() => setView("terms")}
         onPrivacy={() => setView("privacy")}
       />
     );
