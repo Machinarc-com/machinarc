@@ -62,13 +62,12 @@ export default function App() {
     }
   }, []);
 
+  const goExternalAuth = () => {
+    window.location.assign("https://machinarc-machinarc1.vercel.app/auth/authorize");
+  };
+
   const goStart = () => {
-    if (session) {
-      setView("app");
-    } else {
-      setAuthMode("signup");
-      setView("auth");
-    }
+    goExternalAuth();
   };
 
   let screen: React.ReactNode;
@@ -116,18 +115,8 @@ export default function App() {
   } else {
     screen = (
       <Landing
-      onSignUp={goStart}
-      onSignIn={() => {
-        if (session) {
-          setView("app");
-        } else {
-          setAuthMode("signin");
-          setView("auth");
-        }
-      }}
-        onRoadmap={() => setView("roadmap")}
-        onDocs={() => setView("docs")}
-        onTerms={() => setView("terms")}
+          onSignUp={goExternalAuth}
+          onSignIn={goExternalAuth}
         onPrivacy={() => setView("privacy")}
       />
     );
