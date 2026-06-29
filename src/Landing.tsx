@@ -659,6 +659,9 @@ await agent.block("payments.transfer");`}
             <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="transition-colors hover:text-[#9a0002]">
               GitHub
             </a>
+            <a href="https://x.com/machinarc" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#9a0002]">
+              X
+            </a>
             <button onClick={onTerms} className="transition-colors hover:text-[#9a0002]">
               Terms
             </button>
