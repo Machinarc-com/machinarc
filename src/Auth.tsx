@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { continueWithGoogle, login, register, resetPassword, type Session } from "./store";
 import { ApiError, api, apiEnabled, setToken } from "./api";
+import { supabase } from "./supabase";
 import { LogoMark } from "./Logo";
 
 function GoogleMark() {
@@ -80,6 +81,39 @@ export default function Auth({
       }
       onSignIn(res.session);
     }
+  };
+
+  const continueWithGoogleOAuth = async () => {
+    setError("");
+    setNotice("");
+
+    if (supabase) {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) {
+        setError(error.message);
+      }
+      return;
+    }
+
+    if (apiEnabled) {
+      window.location.href = api.googleStartUrl();
+      return;
+    }
+
+    const guess = email.trim() || "you@gmail.com";
+    const input = window.prompt("Continue with Google — enter your Google email", guess);
+    if (!input) return;
+    const res = continueWithGoogle(input);
+    if (!res.ok || !res.session) {
+      setError("Could not continue with Google.");
+      return;
+    }
+    onSignIn(res.session);
   };
 
   return (
@@ -187,24 +221,7 @@ export default function Auth({
               </div>
               <button
                 type="button"
-                onClick={() => {
-                  setError("");
-                  setNotice("");
-                  if (apiEnabled) {
-                    // real Google OAuth — backend handles the flow and redirects back with a token
-                    window.location.href = api.googleStartUrl();
-                    return;
-                  }
-                  const guess = email.trim() || "you@gmail.com";
-                  const input = window.prompt("Continue with Google — enter your Google email", guess);
-                  if (!input) return;
-                  const res = continueWithGoogle(input);
-                  if (!res.ok || !res.session) {
-                    setError("Could not continue with Google.");
-                    return;
-                  }
-                  onSignIn(res.session);
-                }}
+                onClick={continueWithGoogleOAuth}
                 className="flex w-full items-center justify-center gap-3 rounded-md border border-[#1a1413]/20 bg-[#efe6de] px-4 py-3 text-sm font-medium text-[#1a1413] transition-colors hover:border-[#9a0002] active:scale-[0.98]"
               >
                 <GoogleMark />
