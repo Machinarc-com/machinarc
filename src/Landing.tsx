@@ -350,6 +350,19 @@ export default function Landing({
             </button>
             <button
               type="button"
+              onClick={() =>
+                window.location.assign(
+                  `/auth/authorize?client_id=demo-client&redirect_uri=${encodeURIComponent(
+                    window.location.origin + "/auth/callback"
+                  )}&response_type=code&scope=openid%20email&state=demo_state`
+                )
+              }
+              className="text-sm font-medium text-[#1a1413]/70 transition-colors hover:text-[#9a0002]"
+            >
+              OAuth Consent Test
+            </button>
+            <button
+              type="button"
               onClick={onSignIn}
               className="text-sm font-medium text-[#1a1413]/70 transition-colors hover:text-[#9a0002]"
             >
