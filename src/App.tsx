@@ -38,8 +38,12 @@ export default function App() {
       setView("callback");
       return;
     }
-    if (path === "/auth/authorize") {
-      setView("authorize");
+    if (path === AUTH_AUTHORIZE_PATH) {
+      if (window.location.origin === AUTH_PREVIEW_ORIGIN) {
+        setView("authorize");
+        return;
+      }
+      window.location.assign(AUTH_AUTHORIZE_URL);
       return;
     }
 
@@ -59,8 +63,12 @@ export default function App() {
     }
   }, []);
 
+  const AUTH_PREVIEW_ORIGIN = "https://machinarc-machinarc1.vercel.app";
+  const AUTH_AUTHORIZE_PATH = "/auth/authorize";
+  const AUTH_AUTHORIZE_URL = `${AUTH_PREVIEW_ORIGIN}${AUTH_AUTHORIZE_PATH}`;
+
   const goExternalAuth = () => {
-    window.location.assign("https://machinarc-machinarc1.vercel.app/auth/authorize");
+    window.location.assign(AUTH_AUTHORIZE_URL);
   };
 
   const goStart = () => {

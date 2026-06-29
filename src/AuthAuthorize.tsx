@@ -53,36 +53,67 @@ export default function AuthAuthorize({ onSignIn }: { onSignIn: (session: Sessio
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#efe6de] px-5 text-[#1a1413]">
-      <div className="w-full max-w-lg rounded-2xl border border-[#1a1413]/12 bg-[#f5efe8] p-8">
+    <div className="min-h-screen bg-[#efe6de] px-5 py-10 text-[#1a1413]">
+      <div className="mx-auto w-full max-w-lg rounded-2xl border border-[#1a1413]/12 bg-[#f5efe8] p-7 shadow-sm">
+        <button
+          type="button"
+          onClick={() => window.history.back()}
+          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-[#9a0002] hover:underline"
+        >
+          ← Back
+        </button>
+
         <div className="flex items-center gap-3">
-          <LogoMark />
-          <span className="font-display text-xl font-semibold tracking-tight">Machinarc OAuth Consent</span>
+          <LogoMark className="h-10 w-10" />
+          <div>
+            <h1 className="font-display text-2xl font-semibold tracking-tight">Machinarc</h1>
+            <p className="text-sm text-[#1a1413]/60">OAuth authorization</p>
+          </div>
         </div>
-        <p className="mt-4 text-sm text-[#1a1413]/60">Grant access to the requesting application.</p>
-        <div className="mt-6 rounded-2xl border border-[#1a1413]/10 bg-white p-5 text-sm text-[#1a1413]">
-          <p className="font-semibold">Client ID</p>
-          <p className="mt-1 break-words">{params.clientId || "(not provided)"}</p>
-          <p className="mt-4 font-semibold">Requested scope</p>
-          <p className="mt-1 break-words">{params.scope || "default"}</p>
-          <p className="mt-4 font-semibold">Response type</p>
-          <p className="mt-1 break-words">{params.responseType}</p>
-          <p className="mt-4 font-semibold">Redirect URI</p>
-          <p className="mt-1 break-words">{params.redirectUri || "(not provided)"}</p>
+        <p className="mt-3 text-sm text-[#1a1413]/60">The identity layer for autonomous systems.</p>
+
+        <div className="mt-8 rounded-2xl border border-[#1a1413]/12 bg-[#f5efe8] p-6 shadow-sm">
+          <h2 className="text-xl font-semibold text-[#1a1413]">Authorize access</h2>
+          <p className="mt-2 text-sm leading-6 text-[#1a1413]/65">
+            Grant the requesting application permission to access your Machinarc account on your behalf.
+          </p>
+
+          <div className="mt-6 grid gap-4 text-sm text-[#1a1413] sm:grid-cols-2">
+            <div className="rounded-3xl border border-[#1a1413]/15 bg-white p-4">
+              <p className="font-semibold">Client</p>
+              <p className="mt-1 break-words text-[#1a1413]/80">{params.clientId || "(not provided)"}</p>
+            </div>
+            <div className="rounded-3xl border border-[#1a1413]/15 bg-white p-4">
+              <p className="font-semibold">Scope</p>
+              <p className="mt-1 break-words text-[#1a1413]/80">{params.scope || "default"}</p>
+            </div>
+            <div className="rounded-3xl border border-[#1a1413]/15 bg-white p-4">
+              <p className="font-semibold">Response type</p>
+              <p className="mt-1 break-words text-[#1a1413]/80">{params.responseType}</p>
+            </div>
+            <div className="rounded-3xl border border-[#1a1413]/15 bg-white p-4">
+              <p className="font-semibold">Redirect URI</p>
+              <p className="mt-1 break-words text-[#1a1413]/80">{params.redirectUri || "(not provided)"}</p>
+            </div>
+          </div>
         </div>
-        <p className="mt-6 rounded-xl bg-[#efe6de] px-4 py-3 text-sm text-[#1a1413]/90">{message}</p>
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+
+        <p className="mt-6 rounded-3xl border border-[#9a0002]/10 bg-[#f7f0e9] px-4 py-3 text-sm text-[#1a1413]/90">
+          {message}
+        </p>
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
           <button
             type="button"
             onClick={() => handleConsent(true)}
-            className="w-full rounded-md bg-[#1a1413] px-4 py-3 text-sm font-medium text-[#efe6de] transition-colors hover:bg-[#333]"
+            className="rounded-3xl bg-[#9a0002] px-4 py-3 text-sm font-semibold text-[#efe6de] transition-colors hover:bg-[#b32426]"
           >
             Approve
           </button>
           <button
             type="button"
             onClick={() => handleConsent(false)}
-            className="w-full rounded-md border border-[#1a1413]/20 bg-[#efe6de] px-4 py-3 text-sm font-medium text-[#1a1413] transition-colors hover:border-[#9a0002]"
+            className="rounded-3xl border border-[#1a1413]/15 bg-[#efe6de] px-4 py-3 text-sm font-semibold text-[#1a1413] transition-colors hover:border-[#9a0002]"
           >
             Deny
           </button>
