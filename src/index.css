@@ -1,0 +1,212 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #efe6de;
+  --color-cream-soft: #e6dbd0;
+  --color-ink: #1a1413;
+  --color-red: #9a0002;
+  --color-red-soft: #b32426;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+  }
+
+  html,
+  body {
+    margin: 0;
+    min-width: 320px;
+    max-width: 100%;
+    overflow-x: clip;
+    background: #efe6de;
+    color: #1a1413;
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: "Fraunces", Georgia, "Times New Roman", serif;
+    letter-spacing: -0.01em;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  ::selection {
+    background: rgba(154, 0, 2, 0.18);
+    color: #1a1413;
+  }
+}
+
+/* ---- Dark mode ----
+   The UI is built on a fixed cream/ink palette. We theme the whole app at once
+   by inverting the document and rotating hue 180deg, which keeps the brand red
+   reading as red while flipping cream surfaces to deep charcoal. Media and the
+   logo are re-inverted so they render normally. */
+html.dark {
+  filter: invert(0.92) hue-rotate(180deg);
+  background-color: #100f0f;
+}
+
+html.dark img,
+html.dark video,
+html.dark .no-invert {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.dark,
+  html {
+    transition: filter 0.25s ease;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mc-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes mc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes mc-pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+@keyframes mc-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes mc-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes mc-scan {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(900%);
+  }
+}
+
+@keyframes mc-dash {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+@keyframes mc-grid-drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 56px 56px;
+  }
+}
+
+@layer utilities {
+  .animate-reveal {
+    animation: reveal 0.8s ease both;
+  }
+
+  .font-display {
+    font-family: "Fraunces", Georgia, "Times New Roman", serif;
+  }
+
+  .mc-marquee {
+    animation: mc-marquee 28s linear infinite;
+  }
+
+  .mc-spin-slow {
+    animation: mc-spin 18s linear infinite;
+  }
+
+  .mc-pulse-ring {
+    animation: mc-pulse-ring 2.4s ease-out infinite;
+  }
+
+  .mc-blink {
+    animation: mc-blink 1.4s ease-in-out infinite;
+  }
+
+  .mc-float {
+    animation: mc-float 6s ease-in-out infinite;
+  }
+
+  .mc-scan {
+    animation: mc-scan 3.2s linear infinite;
+  }
+
+  .mc-dash {
+    stroke-dasharray: 6 8;
+    animation: mc-dash 24s linear infinite;
+  }
+
+  .mc-grid-drift {
+    animation: mc-grid-drift 6s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mc-marquee,
+    .mc-spin-slow,
+    .mc-pulse-ring,
+    .mc-blink,
+    .mc-float,
+    .mc-scan,
+    .mc-dash,
+    .mc-grid-drift {
+      animation: none;
+    }
+  }
+}
