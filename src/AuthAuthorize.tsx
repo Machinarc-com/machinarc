@@ -49,9 +49,6 @@ export default function AuthAuthorize({ onSignIn }: { onSignIn: (session: Sessio
       setMessage("Cannot redirect because redirect_uri is missing or invalid.");
       return;
     }
-    if (approved) {
-      onSignIn({ email: "oauth-user@example.com", org: "OAuth User" });
-    }
     window.location.href = redirect;
   };
 

@@ -7,7 +7,20 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
   const [message, setMessage] = useState("Completing sign in...");
 
   useEffect(() => {
+    const search = new URLSearchParams(window.location.search);
+    const errorParam = search.get("error");
+    const codeParam = search.get("code");
+
     if (!supabase) {
+      if (errorParam) {
+        setMessage(`OAuth error: ${errorParam}`);
+        return;
+      }
+      if (codeParam === "demo_authorization_code") {
+        onSignIn({ email: "oauth-user@example.com", org: "OAuth User" });
+        history.replaceState(null, "", "/");
+        return;
+      }
       setMessage("Supabase is not configured.");
       return;
     }
@@ -15,6 +28,11 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
     let cancelled = false;
 
     const finish = async () => {
+      if (errorParam) {
+        setMessage(`OAuth error: ${errorParam}`);
+        return;
+      }
+
       const listener = supabase.auth.onAuthStateChange((event, session) => {
         if (cancelled) return;
         if (event === "SIGNED_IN" && session?.user?.email) {
@@ -24,13 +42,18 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
         }
       });
 
-      const { data, error } = await supabase.auth.getSession();
+      const { data, error: sessionError } = await supabase.auth.getSession();
       if (cancelled) return;
-      if (error) {
-        setMessage(error.message || "Unable to complete sign in.");
+      if (sessionError) {
+        setMessage(sessionError.message || "Unable to complete sign in.");
         return;
       }
       if (!data.session?.user?.email) {
+        if (codeParam === "demo_authorization_code") {
+          onSignIn({ email: "oauth-user@example.com", org: "OAuth User" });
+          history.replaceState(null, "", "/");
+          return;
+        }
         setMessage("No active Supabase session was detected.");
         return;
       }
