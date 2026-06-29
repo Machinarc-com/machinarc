@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Landing from "./Landing";
 import Auth from "./Auth";
+import AuthCallback from "./AuthCallback";
 import Dashboard from "./Dashboard";
 import Roadmap from "./Roadmap";
 import PublicDocs from "./PublicDocs";
@@ -9,7 +10,7 @@ import { getSession, signOut, type Session } from "./store";
 import { api, apiEnabled, clearToken, setToken } from "./api";
 import ThemeToggle from "./ThemeToggle";
 
-type View = "landing" | "auth" | "app" | "roadmap" | "docs" | "terms" | "privacy";
+type View = "landing" | "auth" | "callback" | "app" | "roadmap" | "docs" | "terms" | "privacy";
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(() => getSession());
@@ -29,9 +30,15 @@ export default function App() {
     window.scrollTo(0, 0);
   }, [view]);
 
-  // Handle Google OAuth return (#token=...) when a real backend is configured.
   useEffect(() => {
     if (!apiEnabled) return;
+
+    const path = new URL(window.location.href).pathname;
+    if (path === "/auth/callback") {
+      setView("callback");
+      return;
+    }
+
     const match = window.location.hash.match(/token=([^&]+)/);
     if (match) {
       setToken(decodeURIComponent(match[1]));
@@ -74,6 +81,15 @@ export default function App() {
       <Auth
         initialMode={authMode}
         onBack={() => setView("landing")}
+        onSignIn={(s) => {
+          setSession(s);
+          setView("app");
+        }}
+      />
+    );
+  } else if (view === "callback") {
+    screen = (
+      <AuthCallback
         onSignIn={(s) => {
           setSession(s);
           setView("app");
