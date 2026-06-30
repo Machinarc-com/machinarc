@@ -49,24 +49,40 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
       }
 
       let sessionData = null;
+      let exchangeResult: any = null;
       if (codeParam) {
-        const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(codeParam);
+        exchangeResult = await supabase.auth.exchangeCodeForSession(codeParam);
         if (cancelled) return;
-        if (exchangeError) {
-          setMessage(exchangeError.message || "Unable to complete OAuth sign in.");
+        if (exchangeResult.error) {
+          setMessage(
+            `${exchangeResult.error.message || "Unable to complete OAuth sign in."}\n` +
+              `Exchange result: ${JSON.stringify(exchangeResult, null, 2)}`,
+          );
           return;
         }
-        sessionData = data.session;
+        sessionData = exchangeResult.data?.session ?? null;
       }
 
       if (!sessionData) {
-        const { data, error: sessionError } = await supabase.auth.getSession();
+        const sessionResult = await supabase.auth.getSession();
         if (cancelled) return;
-        if (sessionError) {
-          setMessage(sessionError.message || "Unable to complete sign in.");
+        if (sessionResult.error) {
+          setMessage(
+            `${sessionResult.error.message || "Unable to complete sign in."}\n` +
+              `Session result: ${JSON.stringify(sessionResult, null, 2)}`,
+          );
           return;
         }
-        sessionData = data.session;
+        sessionData = sessionResult.data?.session ?? null;
+      }
+
+      if (!sessionData?.user?.email) {
+        setMessage(
+          `No active Supabase session was detected.\n` +
+            `Exchange result: ${JSON.stringify(exchangeResult, null, 2)}\n` +
+            `Session data: ${JSON.stringify(sessionData, null, 2)}`,
+        );
+        return;
       }
 
       if (!sessionData?.user?.email) {
