@@ -59,12 +59,7 @@ export default function App() {
       return;
     }
     if (path === AUTH_AUTHORIZE_PATH) {
-      const isPreviewHost = window.location.hostname.endsWith(".vercel.app");
-      if (isPreviewHost) {
-        setView("authorize");
-        return;
-      }
-      window.location.assign(`${AUTH_AUTHORIZE_URL}${window.location.search}`);
+      setView("authorize");
       return;
     }
 
@@ -86,19 +81,20 @@ export default function App() {
     }
   }, []);
 
-  const AUTH_PREVIEW_ORIGIN = "https://machinarc-machinarc1.vercel.app";
   const AUTH_AUTHORIZE_PATH = "/auth/authorize";
-  const AUTH_AUTHORIZE_URL = `${AUTH_PREVIEW_ORIGIN}${AUTH_AUTHORIZE_PATH}`;
-  const AUTH_AUTHORIZE_QUERY = `?client_id=demo-client&redirect_uri=${encodeURIComponent(
-    `${AUTH_PREVIEW_ORIGIN}/auth/callback`
-  )}&response_type=code&scope=openid%20email&state=demo_state`;
 
   const goExternalAuth = () => {
     if (supabase) {
       setView("auth");
       return;
     }
-    window.location.assign(`${AUTH_AUTHORIZE_URL}${AUTH_AUTHORIZE_QUERY}`);
+
+    const origin = window.location.origin;
+    const query = `?client_id=demo-client&redirect_uri=${encodeURIComponent(
+      `${origin}/auth/callback`
+    )}&response_type=code&scope=openid%20email&state=demo_state`;
+
+    window.location.assign(`${origin}${AUTH_AUTHORIZE_PATH}${query}`);
   };
 
   const goStart = () => {

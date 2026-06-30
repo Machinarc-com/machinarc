@@ -58,8 +58,8 @@ export default function AuthAuthorize({ onSignIn }: { onSignIn: (session: Sessio
   };
 
   const missingParams = !params.hadClientId || !params.hadRedirectUri || !params.hadScope || !params.hadState;
+  const origin = window.location.origin;
   const reloadDemoFlow = () => {
-    const origin = window.location.origin;
     window.location.href = `${origin}/auth/authorize?client_id=demo-client&redirect_uri=${encodeURIComponent(
       `${origin}/auth/callback`
     )}&response_type=code&scope=openid%20email&state=demo_state`;
