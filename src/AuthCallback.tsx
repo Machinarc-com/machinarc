@@ -13,7 +13,7 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
   console.log("Current URL:", window.location.href);
   console.log("Code:", codeParam);
   console.log("LocalStorage:", Object.keys(localStorage));
- if(!supabase){setMessage("Supabase is not configured.");
+ if(!supabase){setMessage("Supabase is not configured."); {
  let cancelled=false;
  (async()=>{
  if(errorParam){setMessage(`OAuth error: ${errorParam}`);return;}
