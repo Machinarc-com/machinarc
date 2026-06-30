@@ -33,6 +33,12 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
         return;
       }
 
+      if (codeParam === "demo_authorization_code") {
+        onSignIn({ email: "oauth-user@example.com", org: "OAuth User" });
+        history.replaceState(null, "", "/");
+        return;
+      }
+
       let sessionData = null;
       if (codeParam || window.location.hash.includes("access_token")) {
         const { data, error: urlError } = await supabase.auth.getSessionFromUrl({ storeSession: true });
@@ -55,11 +61,6 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
       }
 
       if (!sessionData?.user?.email) {
-        if (codeParam === "demo_authorization_code") {
-          onSignIn({ email: "oauth-user@example.com", org: "OAuth User" });
-          history.replaceState(null, "", "/");
-          return;
-        }
         setMessage("No active Supabase session was detected.");
         return;
       }

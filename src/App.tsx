@@ -68,7 +68,7 @@ export default function App() {
   const AUTH_AUTHORIZE_PATH = "/auth/authorize";
   const AUTH_AUTHORIZE_URL = `${AUTH_PREVIEW_ORIGIN}${AUTH_AUTHORIZE_PATH}`;
   const AUTH_AUTHORIZE_QUERY = `?client_id=demo-client&redirect_uri=${encodeURIComponent(
-    window.location.origin + "/auth/callback"
+    `${AUTH_PREVIEW_ORIGIN}/auth/callback`
   )}&response_type=code&scope=openid%20email&state=demo_state`;
 
   const goExternalAuth = () => {
