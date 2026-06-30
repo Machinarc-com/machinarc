@@ -49,11 +49,11 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
       }
 
       let sessionData = null;
-      if (codeParam || window.location.hash.includes("access_token")) {
-        const { data, error: urlError } = await supabase.auth.getSessionFromUrl({ storeSession: true });
+      if (codeParam) {
+        const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(codeParam);
         if (cancelled) return;
-        if (urlError) {
-          setMessage(urlError.message || "Unable to complete OAuth sign in.");
+        if (exchangeError) {
+          setMessage(exchangeError.message || "Unable to complete OAuth sign in.");
           return;
         }
         sessionData = data.session;
