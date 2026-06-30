@@ -109,6 +109,12 @@ export default function Auth({
         <button onClick={onBack} className="mb-6 text-sm text-[#9a0002] hover:underline">
           ← Back
         </button>
+        {!supabase ? (
+          <div className="mb-4 rounded-3xl border border-[#ef5f5f]/20 bg-[#fff1f0] px-4 py-3 text-sm text-[#9a0002]">
+            <p className="font-semibold">Supabase is not configured.</p>
+            <p className="mt-1">Set <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> in your environment.</p>
+          </div>
+        ) : null}
         <div className="rounded-2xl border border-[#1a1413]/12 bg-[#f5efe8] p-7">
           <div className="flex items-center gap-3">
             <LogoMark />
