@@ -36,6 +36,7 @@ export default function App() {
     const path = rawPath.replace(/\/\/+/g, "/");
     const restoreSupabaseSession = async () => {
       if (!supabase) return;
+      if (path.startsWith("/auth/callback")) return;
       const {
         data: { session },
         error,
@@ -47,9 +48,7 @@ export default function App() {
       };
       saveSession(nextSession);
       setSession(nextSession);
-      if (path !== "/auth/callback") {
-        setView("app");
-      }
+      setView("app");
     };
 
     void restoreSupabaseSession();

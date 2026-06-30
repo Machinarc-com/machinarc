@@ -63,7 +63,15 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
         sessionData = exchangeResult.data?.session ?? null;
       }
 
+      const hasHashToken = Boolean(
+        window.location.hash &&
+          (window.location.hash.includes("access_token") || window.location.hash.includes("refresh_token")),
+      );
+
       if (!sessionData) {
+        if (hasHashToken) {
+          await new Promise((resolve) => setTimeout(resolve, 0));
+        }
         const sessionResult = await supabase.auth.getSession();
         if (cancelled) return;
         if (sessionResult.error) {
@@ -76,17 +84,21 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
         sessionData = sessionResult.data?.session ?? null;
       }
 
+      if (!sessionData && hasHashToken) {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        const retryResult = await supabase.auth.getSession();
+        if (cancelled) return;
+        if (!retryResult.error) {
+          sessionData = retryResult.data?.session ?? null;
+        }
+      }
+
       if (!sessionData?.user?.email) {
         setMessage(
           `No active Supabase session was detected.\n` +
             `Exchange result: ${JSON.stringify(exchangeResult, null, 2)}\n` +
             `Session data: ${JSON.stringify(sessionData, null, 2)}`,
         );
-        return;
-      }
-
-      if (!sessionData?.user?.email) {
-        setMessage("No active Supabase session was detected.");
         return;
       }
 
