@@ -39,7 +39,8 @@ export default function App() {
       return;
     }
     if (path === AUTH_AUTHORIZE_PATH) {
-      if (window.location.origin === AUTH_PREVIEW_ORIGIN) {
+      const isPreviewHost = window.location.hostname.endsWith(".vercel.app");
+      if (isPreviewHost) {
         setView("authorize");
         return;
       }
