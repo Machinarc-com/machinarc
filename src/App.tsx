@@ -93,8 +93,10 @@ export default function App() {
     const query = `?client_id=demo-client&redirect_uri=${encodeURIComponent(
       `${origin}/auth/callback`
     )}&response_type=code&scope=openid%20email&state=demo_state`;
+    const authorizeUrl = `${AUTH_AUTHORIZE_PATH}${query}`;
 
-    window.location.assign(`${origin}${AUTH_AUTHORIZE_PATH}${query}`);
+    window.history.pushState(null, "", authorizeUrl);
+    setView("authorize");
   };
 
   const goStart = () => {
