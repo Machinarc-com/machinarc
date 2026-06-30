@@ -20,27 +20,7 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
  try{
  let session=null;
  let exchangeResult:any=null;
- const {
-  data: { session },
-  error,
-} = await supabase.auth.getSession();
-
-console.log("Session:", session);
-console.log("Session error:", error);
-
-if (error) {setMessage(error.message);
-  return;}
-if (!session){setMessage("No active Supabase session found.");
-  return;}
-// Continue with your existing login logic
-const user = session.user;
-saveSession({
-  email: user.email!,
-  org: user.user_metadata?.org ?? user.email!,});
-  onSignIn({
-  email: user.email!,
-  org: user.user_metadata?.org ?? user.email!,});
- window.history.replaceState({}, "", "/");
+ if(codeParam){ exchangeResult=await supabase.auth.exchangeCodeForSession(codeParam); console.log(exchangeResult);
  if(cancelled)return;
  if(exchangeResult.error){setMessage(exchangeResult.error.message);return;}
  session=exchangeResult.data.session;
