@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "./supabase";
+import { supabase, supabaseUrl } from "./supabase";
 import { LogoMark } from "./Logo";
 import { saveSession, type Session } from "./store";
 
@@ -13,7 +13,9 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
     const currentUrl = `${window.location.origin}${window.location.pathname}${window.location.search}${window.location.hash}`;
 
     const renderError = (text: string) => {
-      setMessage(`${text} \nURL: ${currentUrl} \nSupabase configured: ${Boolean(supabase)}`);
+      setMessage(
+        `${text} \nURL: ${currentUrl} \nSupabase configured: ${Boolean(supabase)} \nSupabase URL: ${supabaseUrl}`,
+      );
     };
 
     if (!supabase) {
