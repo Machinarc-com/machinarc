@@ -48,19 +48,38 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
         return;
       }
 
-      let sessionData = null;
-      let exchangeResult: any = null;
-      if (codeParam) {
-        exchangeResult = await supabase.auth.exchangeCodeForSession(codeParam);
-        if (cancelled) return;
-        if (exchangeResult.error) {
-          setMessage(
-            `${exchangeResult.error.message || "Unable to complete OAuth sign in."}\n` +
-              `Exchange result: ${JSON.stringify(exchangeResult, null, 2)}`,
-          );
-          return;
-        }
-        sessionData = exchangeResult.data?.session ?? null;
+   let sessionData = null;
+let exchangeResult: any = null;
+
+if (codeParam) {
+  exchangeResult = await supabase.auth.exchangeCodeForSession(codeParam);
+
+  console.log("Exchange Result:", exchangeResult);
+
+  if (cancelled) return;
+
+  if (exchangeResult.error) {
+    setMessage(exchangeResult.error.message);
+    return;
+  }
+
+  sessionData = exchangeResult.data?.session ?? null;
+}
+
+if (!sessionData) {
+  const sessionResult = await supabase.auth.getSession();
+
+  console.log("Session Result:", sessionResult);
+
+  if (cancelled) return;
+
+  if (sessionResult.error) {
+    setMessage(sessionResult.error.message);
+    return;
+  }
+
+  sessionData = sessionResult.data?.session ?? null;
+}
       }
 
       const hasHashToken = Boolean(
