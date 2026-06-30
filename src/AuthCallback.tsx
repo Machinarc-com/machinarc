@@ -9,6 +9,10 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
  const search=new URLSearchParams(window.location.search);
  const errorParam=search.get("error");
  const codeParam=search.get("code");
+  console.log("=== CALLBACK ===");
+  console.log("Current URL:", window.location.href);
+  console.log("Code:", codeParam);
+  console.log("LocalStorage:", Object.keys(localStorage));
  if(!supabase){setMessage(`Supabase is not configured. URL: ${supabaseUrl}`);return;}
  let cancelled=false;
  (async()=>{
