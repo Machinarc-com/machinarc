@@ -754,6 +754,14 @@ export function getSession(): Session | null {
   }
 }
 
+export function saveSession(session: Session | null) {
+  if (!session) {
+    localStorage.removeItem(SESSION_KEY);
+    return;
+  }
+  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+}
+
 export function getCurrentWorkspace(): Workspace | null {
   const session = getSession();
   if (!session) return null;
@@ -787,7 +795,7 @@ export function register(email: string, password: string, workspaceName: string)
   saveWorkspaces([...loadWorkspaces(), ws]);
 
   const session: Session = { email: cleanedEmail, org: ws.name };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  saveSession(session);
   return { ok: true, session };
 }
 
@@ -800,7 +808,7 @@ export function login(email: string, password: string): { ok: boolean; error?: s
   }
   const ws = loadWorkspaces().find((w) => w.owner_id === user.id);
   const session: Session = { email: cleanedEmail, org: ws?.name ?? "Workspace" };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  saveSession(session);
   return { ok: true, session };
 }
 
@@ -837,7 +845,7 @@ export function continueWithGoogle(email: string): { ok: boolean; session?: Sess
   }
 
   const session: Session = { email: cleanedEmail, org: ws.name };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  saveSession(session);
   return { ok: true, session };
 }
 
@@ -869,12 +877,12 @@ export function renameWorkspace(name: string): Session | null {
     saveWorkspaces(ws);
   }
   const next: Session = { ...session, org: name.trim() };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(next));
+  saveSession(next);
   return next;
 }
 
 export function signOut() {
-  localStorage.removeItem(SESSION_KEY);
+  saveSession(null);
 }
 
 export function relativeTime(ts: number | null): string {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
 import { LogoMark } from "./Logo";
-import type { Session } from "./store";
+import { saveSession, type Session } from "./store";
 
 export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session) => void }) {
   const [message, setMessage] = useState("Completing sign in...");
@@ -39,7 +39,9 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
       }
 
       if (codeParam === "demo_authorization_code") {
-        onSignIn({ email: "oauth-user@example.com", org: "OAuth User" });
+        const demoSession = { email: "oauth-user@example.com", org: "OAuth User" };
+        saveSession(demoSession);
+        onSignIn(demoSession);
         history.replaceState(null, "", "/");
         return;
       }
@@ -71,7 +73,9 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
       }
 
       const email = sessionData.user.email;
-      onSignIn({ email, org: email });
+      const nextSession = { email, org: sessionData.user.user_metadata?.org ?? email };
+      saveSession(nextSession);
+      onSignIn(nextSession);
       history.replaceState(null, "", "/");
     };
 

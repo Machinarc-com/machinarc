@@ -7,7 +7,7 @@ import Dashboard from "./Dashboard";
 import Roadmap from "./Roadmap";
 import PublicDocs from "./PublicDocs";
 import Legal from "./Legal";
-import { getSession, signOut, type Session } from "./store";
+import { getSession, saveSession, signOut, type Session } from "./store";
 import { api, apiEnabled, clearToken, setToken } from "./api";
 import { supabase } from "./supabase";
 import ThemeToggle from "./ThemeToggle";
@@ -35,6 +35,25 @@ export default function App() {
   useEffect(() => {
     const rawPath = new URL(window.location.href).pathname;
     const path = rawPath.replace(/\/\/+/g, "/");
+    const restoreSupabaseSession = async () => {
+      if (!supabase) return;
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+      if (error || !session?.user?.email) return;
+      const nextSession = {
+        email: session.user.email,
+        org: session.user.user_metadata?.org ?? session.user.email,
+      };
+      saveSession(nextSession);
+      setSession(nextSession);
+      if (path !== "/auth/callback") {
+        setView("app");
+      }
+    };
+
+    void restoreSupabaseSession();
     if (path === "/auth/callback") {
       setView("callback");
       return;
@@ -58,7 +77,9 @@ export default function App() {
       api
         .me()
         .then((me) => {
-          setSession({ email: me.email, org: me.workspace });
+          const nextSession = { email: me.email, org: me.workspace };
+          saveSession(nextSession);
+          setSession(nextSession);
           setView("app");
         })
         .catch(() => clearToken());
@@ -104,6 +125,7 @@ export default function App() {
         initialMode={authMode}
         onBack={() => setView("landing")}
         onSignIn={(s) => {
+          saveSession(s);
           setSession(s);
           setView("app");
         }}
@@ -113,6 +135,7 @@ export default function App() {
     screen = (
       <AuthAuthorize
         onSignIn={(s) => {
+          saveSession(s);
           setSession(s);
           setView("app");
         }}
@@ -122,6 +145,7 @@ export default function App() {
     screen = (
       <AuthCallback
         onSignIn={(s) => {
+          saveSession(s);
           setSession(s);
           setView("app");
         }}
