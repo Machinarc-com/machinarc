@@ -13,7 +13,7 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
     const currentUrl = `${window.location.origin}${window.location.pathname}${window.location.search}${window.location.hash}`;
 
     const renderError = (text: string) => {
-      setMessage(`${text} \nURL: ${currentUrl}`);
+      setMessage(`${text} \nURL: ${currentUrl} \nSupabase configured: ${Boolean(supabase)}`);
     };
 
     if (!supabase) {

@@ -5,9 +5,9 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 // We also support legacy or host-exported fallbacks: VITE_PUBLIC_SUPABASE_URL,
 // VITE_PUBLIC_SUPABASE_ANON_KEY, and NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY.
 const env = import.meta.env as Record<string, string | undefined>;
-const supabaseUrl =
+export const supabaseUrl =
   env.VITE_SUPABASE_URL ?? env.VITE_PUBLIC_SUPABASE_URL ?? env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey =
+export const supabaseAnonKey =
   env.VITE_SUPABASE_ANON_KEY ?? env.VITE_PUBLIC_SUPABASE_ANON_KEY ?? env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export const supabase: SupabaseClient | null =

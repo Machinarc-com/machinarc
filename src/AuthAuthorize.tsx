@@ -57,6 +57,14 @@ export default function AuthAuthorize({ onSignIn }: { onSignIn: (session: Sessio
     window.location.href = redirect;
   };
 
+  const missingParams = !params.hadClientId || !params.hadRedirectUri || !params.hadScope || !params.hadState;
+  const reloadDemoFlow = () => {
+    const origin = window.location.origin;
+    window.location.href = `${origin}/auth/authorize?client_id=demo-client&redirect_uri=${encodeURIComponent(
+      `${origin}/auth/callback`
+    )}&response_type=code&scope=openid%20email&state=demo_state`;
+  };
+
   return (
     <div className="min-h-screen bg-[#efe6de] px-5 py-10 text-[#1a1413]">
       <div className="mx-auto w-full max-w-lg rounded-2xl border border-[#1a1413]/12 bg-[#f5efe8] p-7 shadow-sm">
@@ -106,6 +114,20 @@ export default function AuthAuthorize({ onSignIn }: { onSignIn: (session: Sessio
         <p className="mt-6 rounded-3xl border border-[#9a0002]/10 bg-[#f7f0e9] px-4 py-3 text-sm text-[#1a1413]/90">
           {message}
         </p>
+
+        {missingParams ? (
+          <div className="mt-4 rounded-3xl border border-[#1a1413]/15 bg-[#fff8f1] p-4 text-sm text-[#9a1413]">
+            <p className="font-semibold">OAuth parameters were missing.</p>
+            <p className="mt-2">Reload the consent flow with default demo values.</p>
+            <button
+              type="button"
+              onClick={reloadDemoFlow}
+              className="mt-3 rounded-3xl bg-[#9a0002] px-4 py-3 text-sm font-semibold text-[#efe6de] transition-colors hover:bg-[#b32426]"
+            >
+              Reload demo auth flow
+            </button>
+          </div>
+        ) : null}
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           <button
