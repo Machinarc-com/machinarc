@@ -51,9 +51,12 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
       let sessionData = null;
       let exchangeResult: any = null;
       if (codeParam) {
-        exchangeResult = await supabase.auth.exchangeCodeForSession(codeParam);
+        exchangeResult = const sessionResult = await supabase.auth.getSession();
         if (cancelled) return;
-        if (exchangeResult.error) {
+        if (sessionResult.error) 
+        {
+  setMessage(sessionResult.error.message);
+  return;
           setMessage(
             `${exchangeResult.error.message || "Unable to complete OAuth sign in."}\n` +
               `Exchange result: ${JSON.stringify(exchangeResult, null, 2)}`,
