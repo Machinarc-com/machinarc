@@ -4,12 +4,17 @@ import type { Session } from "./store";
 
 function parseQueryParams(search: string) {
   const params = new URLSearchParams(search);
+  const origin = window.location.origin;
   return {
-    clientId: params.get("client_id") ?? "",
-    redirectUri: params.get("redirect_uri") ?? "",
+    clientId: params.get("client_id") ?? "demo-client",
+    redirectUri: params.get("redirect_uri") ?? `${origin}/auth/callback`,
     responseType: params.get("response_type") ?? "code",
-    scope: params.get("scope") ?? "",
-    state: params.get("state") ?? "",
+    scope: params.get("scope") ?? "openid email",
+    state: params.get("state") ?? "demo_state",
+    hadClientId: params.has("client_id"),
+    hadRedirectUri: params.has("redirect_uri"),
+    hadScope: params.has("scope"),
+    hadState: params.has("state"),
   };
 }
 

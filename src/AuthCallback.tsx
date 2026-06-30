@@ -33,22 +33,28 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
         return;
       }
 
-      const listener = supabase.auth.onAuthStateChange((event, session) => {
+      let sessionData = null;
+      if (codeParam || window.location.hash.includes("access_token")) {
+        const { data, error: urlError } = await supabase.auth.getSessionFromUrl({ storeSession: true });
         if (cancelled) return;
-        if (event === "SIGNED_IN" && session?.user?.email) {
-          const email = session.user.email;
-          onSignIn({ email, org: email });
-          history.replaceState(null, "", "/");
+        if (urlError) {
+          setMessage(urlError.message || "Unable to complete OAuth sign in.");
+          return;
         }
-      });
-
-      const { data, error: sessionError } = await supabase.auth.getSession();
-      if (cancelled) return;
-      if (sessionError) {
-        setMessage(sessionError.message || "Unable to complete sign in.");
-        return;
+        sessionData = data.session;
       }
-      if (!data.session?.user?.email) {
+
+      if (!sessionData) {
+        const { data, error: sessionError } = await supabase.auth.getSession();
+        if (cancelled) return;
+        if (sessionError) {
+          setMessage(sessionError.message || "Unable to complete sign in.");
+          return;
+        }
+        sessionData = data.session;
+      }
+
+      if (!sessionData?.user?.email) {
         if (codeParam === "demo_authorization_code") {
           onSignIn({ email: "oauth-user@example.com", org: "OAuth User" });
           history.replaceState(null, "", "/");
@@ -58,13 +64,9 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
         return;
       }
 
-      const email = data.session.user.email;
+      const email = sessionData.user.email;
       onSignIn({ email, org: email });
       history.replaceState(null, "", "/");
-
-      if (listener?.data?.subscription?.unsubscribe) {
-        listener.data.subscription.unsubscribe();
-      }
     };
 
     finish();
