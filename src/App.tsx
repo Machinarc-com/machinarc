@@ -44,7 +44,7 @@ export default function App() {
         setView("authorize");
         return;
       }
-      window.location.assign(AUTH_AUTHORIZE_URL);
+      window.location.assign(`${AUTH_AUTHORIZE_URL}${window.location.search}`);
       return;
     }
 
