@@ -72,7 +72,7 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
         if (hasHashToken) {
           await new Promise((resolve) => setTimeout(resolve, 0));
         }
-        const sessionResult = await supabase.auth.getSession();
+        await supabase.auth.getSession()
         if (cancelled) return;
         if (sessionResult.error) {
           setMessage(

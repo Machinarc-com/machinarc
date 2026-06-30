@@ -276,7 +276,7 @@ function BlockedConsole() {
   );
 }
 
-const GITHUB_URL = "https://github.com/machinarc";
+const GITHUB_URL = "https://github.com/Machinarc-com";
 
 export default function Landing({
   onSignUp,
