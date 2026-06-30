@@ -9,6 +9,7 @@ import PublicDocs from "./PublicDocs";
 import Legal from "./Legal";
 import { getSession, signOut, type Session } from "./store";
 import { api, apiEnabled, clearToken, setToken } from "./api";
+import { supabase } from "./supabase";
 import ThemeToggle from "./ThemeToggle";
 
 type View = "landing" | "auth" | "authorize" | "callback" | "app" | "roadmap" | "docs" | "terms" | "privacy";
@@ -72,6 +73,10 @@ export default function App() {
   )}&response_type=code&scope=openid%20email&state=demo_state`;
 
   const goExternalAuth = () => {
+    if (supabase) {
+      setView("auth");
+      return;
+    }
     window.location.assign(`${AUTH_AUTHORIZE_URL}${AUTH_AUTHORIZE_QUERY}`);
   };
 

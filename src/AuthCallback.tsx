@@ -10,10 +10,15 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
     const search = new URLSearchParams(window.location.search);
     const errorParam = search.get("error");
     const codeParam = search.get("code");
+    const currentUrl = `${window.location.origin}${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+    const renderError = (text: string) => {
+      setMessage(`${text} \nURL: ${currentUrl}`);
+    };
 
     if (!supabase) {
       if (errorParam) {
-        setMessage(`OAuth error: ${errorParam}`);
+        renderError(`OAuth error: ${errorParam}`);
         return;
       }
       if (codeParam === "demo_authorization_code") {
@@ -21,7 +26,7 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
         history.replaceState(null, "", "/");
         return;
       }
-      setMessage("Supabase is not configured.");
+      renderError("Supabase is not configured.");
       return;
     }
 
