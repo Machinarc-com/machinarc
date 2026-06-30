@@ -97,6 +97,7 @@ export default function Auth({
       provider: "google",
       options: {
         redirectTo,
+        flowType: "pkce",
       },
     });
 
