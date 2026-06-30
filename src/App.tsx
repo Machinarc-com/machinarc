@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Landing from "./Landing";
 import Auth from "./Auth";
-import AuthAuthorize from "./AuthAuthorize";
 import AuthCallback from "./AuthCallback";
 import Dashboard from "./Dashboard";
 import Roadmap from "./Roadmap";
@@ -12,7 +11,7 @@ import { api, apiEnabled, clearToken, setToken } from "./api";
 import { supabase } from "./supabase";
 import ThemeToggle from "./ThemeToggle";
 
-type View = "landing" | "auth" | "authorize" | "callback" | "app" | "roadmap" | "docs" | "terms" | "privacy";
+type View = "landing" | "auth" | "callback" | "app" | "roadmap" | "docs" | "terms" | "privacy";
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(() => getSession());
@@ -58,10 +57,6 @@ export default function App() {
       setView("callback");
       return;
     }
-    if (path === AUTH_AUTHORIZE_PATH) {
-      setView("authorize");
-      return;
-    }
 
     if (!apiEnabled) return;
 
@@ -81,22 +76,8 @@ export default function App() {
     }
   }, []);
 
-  const AUTH_AUTHORIZE_PATH = "/auth/authorize";
-
   const goExternalAuth = () => {
-    if (supabase) {
-      setView("auth");
-      return;
-    }
-
-    const origin = window.location.origin;
-    const query = `?client_id=demo-client&redirect_uri=${encodeURIComponent(
-      `${origin}/auth/callback`
-    )}&response_type=code&scope=openid%20email&state=demo_state`;
-    const authorizeUrl = `${AUTH_AUTHORIZE_PATH}${query}`;
-
-    window.history.pushState(null, "", authorizeUrl);
-    setView("authorize");
+    setView("auth");
   };
 
   const goStart = () => {
@@ -122,16 +103,6 @@ export default function App() {
       <Auth
         initialMode={authMode}
         onBack={() => setView("landing")}
-        onSignIn={(s) => {
-          saveSession(s);
-          setSession(s);
-          setView("app");
-        }}
-      />
-    );
-  } else if (view === "authorize") {
-    screen = (
-      <AuthAuthorize
         onSignIn={(s) => {
           saveSession(s);
           setSession(s);
