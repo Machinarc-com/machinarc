@@ -87,20 +87,26 @@ export default function Auth({
     setError("");
     setNotice("");
 
-    if (supabase) {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      if (error) {
-        setError(error.message);
-      }
+    if (!supabase) {
+      setError("Google sign-in is not configured. Please set Supabase env vars.");
       return;
     }
 
-    setError("Google sign-in is not configured. Please set Supabase env vars.");
+    const redirectTo = `${window.location.origin}/auth/callback`;
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo,
+      },
+    });
+
+    if (error) {
+      setError(error.message);
+      console.error("Supabase OAuth error:", error);
+      return;
+    }
+
+    console.debug("Supabase OAuth redirect started", { data, redirectTo, supabaseUrl });
   };
 
   return (
