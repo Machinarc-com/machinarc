@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { login, register, resetPassword, type Session } from "./store";
 import { ApiError, api, apiEnabled, setToken } from "./api";
-import { supabase } from "./supabase";
+import { supabase, supabaseUrl } from "./supabase";
 import { LogoMark } from "./Logo";
 
 function GoogleMark() {
