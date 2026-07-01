@@ -30,6 +30,7 @@ export default function Auth({
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const supabaseConfigured = Boolean(supabase);
 
   const submit = () => {
     setError("");
@@ -223,11 +224,21 @@ export default function Auth({
               <button
                 type="button"
                 onClick={continueWithGoogleOAuth}
-                className="flex w-full items-center justify-center gap-3 rounded-md border border-[#1a1413]/20 bg-[#efe6de] px-4 py-3 text-sm font-medium text-[#1a1413] transition-colors hover:border-[#9a0002] active:scale-[0.98]"
+                disabled={!supabaseConfigured}
+                className={`flex w-full items-center justify-center gap-3 rounded-md border px-4 py-3 text-sm font-medium transition-colors active:scale-[0.98] ${
+                  supabaseConfigured
+                    ? "border-[#1a1413]/20 bg-[#efe6de] text-[#1a1413] hover:border-[#9a0002]"
+                    : "border-[#d1d5db] bg-[#f3f4f6] text-[#6b7280] cursor-not-allowed"
+                }`}
               >
                 <GoogleMark />
                 Continue with Google
               </button>
+              {!supabaseConfigured ? (
+                <p className="mt-3 text-center text-xs text-[#9a0002]">
+                  Google sign-in requires Supabase env vars: <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code>.
+                </p>
+              ) : null}
             </>
           )}
 
