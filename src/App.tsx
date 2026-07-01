@@ -33,7 +33,7 @@ export default function App() {
 
   useEffect(() => {
     const rawPath = new URL(window.location.href).pathname;
-    const path = rawPath.replace(/\/\/+/g, "/");
+    const path = rawPath.replace(/\/\/+/g, "/").replace(/\/$/, "");
     const restoreSupabaseSession = async () => {
       if (!supabase) return;
       if (path.startsWith("/auth/callback")) return;

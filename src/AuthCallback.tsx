@@ -31,7 +31,12 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
       renderError("Supabase is not configured.");
       return;
     }
-
+    console.debug("AuthCallback", {
+      currentUrl,
+      origin: window.location.origin,
+      pathname: window.location.pathname,
+      expectedCallback: `${window.location.origin}/auth/callback`,
+    });
     let cancelled = false;
     const authClient = supabase;
 
