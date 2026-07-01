@@ -10,12 +10,25 @@ export const supabaseUrl =
 export const supabaseAnonKey =
   env.VITE_SUPABASE_ANON_KEY ?? env.VITE_PUBLIC_SUPABASE_ANON_KEY ?? env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export const supabase: SupabaseClient | null =
-  supabaseUrl && supabaseAnonKey
-    ? createClient(supabaseUrl, supabaseAnonKey, {
-        auth: {
-          detectSessionInUrl: true,
-          flowType: "pkce",
-        },
-      })
-    : null;
+const looksLikeServiceRoleKey = (value?: string) => Boolean(value && /sb_secret_|service_role|service-role/i.test(value));
+const looksLikePlaceholderKey = (value?: string) =>
+  Boolean(value && /your-?anon|replace-with|placeholder|example/i.test(value));
+
+export const supabaseConfigIssue = !supabaseUrl
+  ? "Missing Supabase URL. Set VITE_SUPABASE_URL."
+  : !supabaseAnonKey
+    ? "Missing Supabase anon key. Set VITE_SUPABASE_ANON_KEY."
+    : looksLikeServiceRoleKey(supabaseAnonKey)
+      ? "The configured Supabase key looks like a service-role secret. Replace it with the public anon key from your Supabase project settings."
+      : looksLikePlaceholderKey(supabaseAnonKey)
+        ? "The configured Supabase anon key is still a placeholder. Replace it with the public anon key from your Supabase project settings."
+        : "";
+
+export const supabase: SupabaseClient | null = supabaseConfigIssue
+  ? null
+  : createClient(supabaseUrl!, supabaseAnonKey!, {
+      auth: {
+        detectSessionInUrl: true,
+        flowType: "pkce",
+      },
+    });

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { login, register, resetPassword, type Session } from "./store";
 import { ApiError, api, apiEnabled, setToken } from "./api";
-import { supabase, supabaseUrl } from "./supabase";
+import { supabase, supabaseConfigIssue, supabaseUrl } from "./supabase";
 import { LogoMark } from "./Logo";
 
 function GoogleMark() {
@@ -89,7 +89,7 @@ export default function Auth({
     setNotice("");
 
     if (!supabase) {
-      setError("Google sign-in is not configured. Please set Supabase env vars.");
+      setError(supabaseConfigIssue || "Google sign-in is not configured. Please set Supabase env vars.");
       return;
     }
 
@@ -121,7 +121,7 @@ export default function Auth({
         {!supabase ? (
           <div className="mb-4 rounded-3xl border border-[#ef5f5f]/20 bg-[#fff1f0] px-4 py-3 text-sm text-[#9a0002]">
             <p className="font-semibold">Supabase is not configured.</p>
-            <p className="mt-1">Set <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> in your environment.</p>
+            <p className="mt-1">{supabaseConfigIssue || "Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your environment."}</p>
           </div>
         ) : null}
         <div className="rounded-2xl border border-[#1a1413]/12 bg-[#f5efe8] p-7">
@@ -236,7 +236,7 @@ export default function Auth({
               </button>
               {!supabaseConfigured ? (
                 <p className="mt-3 text-center text-xs text-[#9a0002]">
-                  Google sign-in requires Supabase env vars: <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code>.
+                  {supabaseConfigIssue || "Google sign-in requires Supabase env vars: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY."}
                 </p>
               ) : null}
             </>

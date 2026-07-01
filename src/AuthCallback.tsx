@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase, supabaseUrl } from "./supabase";
+import { supabase, supabaseConfigIssue, supabaseUrl } from "./supabase";
 import { LogoMark } from "./Logo";
 import { saveSession, type Session } from "./store";
 
@@ -21,6 +21,10 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
     if (!supabase) {
       if (errorParam) {
         renderError(`OAuth error: ${errorParam}`);
+        return;
+      }
+      if (supabaseConfigIssue) {
+        renderError(supabaseConfigIssue);
         return;
       }
       if (codeParam === "demo_authorization_code") {
