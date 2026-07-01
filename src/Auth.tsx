@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { login, register, resetPassword, type Session } from "./store";
-import { ApiError, api, apiEnabled, setToken } from "./api";
+import { ApiError, api, apiConfigIssue, apiEnabled, setToken } from "./api";
 import { supabase, supabaseConfigIssue, supabaseUrl } from "./supabase";
 import { LogoMark } from "./Logo";
 
@@ -31,6 +31,7 @@ export default function Auth({
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const supabaseConfigured = Boolean(supabase);
+  const hasApiIssue = Boolean(apiConfigIssue);
 
   const submit = () => {
     setError("");
@@ -124,6 +125,12 @@ export default function Auth({
             <p className="mt-1">{supabaseConfigIssue || "Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your environment."}</p>
           </div>
         ) : null}
+        {hasApiIssue ? (
+          <div className="mb-4 rounded-3xl border border-[#f59e0b]/20 bg-[#fffbeb] px-4 py-3 text-sm text-[#92400e]">
+            <p className="font-semibold">Backend config warning</p>
+            <p className="mt-1">{apiConfigIssue}</p>
+          </div>
+        ) : null}
         <div className="rounded-2xl border border-[#1a1413]/12 bg-[#f5efe8] p-7">
           <div className="flex items-center gap-3">
             <LogoMark />
@@ -205,6 +212,7 @@ export default function Auth({
             />
 
             {error ? <p className="text-sm text-[#9a0002]">{error}</p> : null}
+            {hasApiIssue ? <p className="text-sm text-[#92400e]">Using local demo auth because backend mode is not available.</p> : null}
 
             <button
               type="submit"

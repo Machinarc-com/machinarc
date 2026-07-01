@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase, supabaseConfigIssue, supabaseUrl } from "./supabase";
 import { LogoMark } from "./Logo";
-import { saveSession, type Session } from "./store";
+import { continueWithGoogle, saveSession, type Session } from "./store";
 
 export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session) => void }) {
   const [message, setMessage] = useState("Completing sign in...");
@@ -106,7 +106,15 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
       }
 
       const email = sessionData.user.email;
-      const nextSession = { email, org: sessionData.user.user_metadata?.org ?? email };
+      let nextSession: Session = { email, org: sessionData.user.user_metadata?.org ?? email };
+
+      if (!import.meta.env.VITE_API_URL) {
+        const result = continueWithGoogle(email);
+        if (result.ok && result.session) {
+          nextSession = result.session;
+        }
+      }
+
       saveSession(nextSession);
       onSignIn(nextSession);
       history.replaceState(null, "", "/#app");

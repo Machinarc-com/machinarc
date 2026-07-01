@@ -4,9 +4,12 @@
 // real FastAPI backend. When it is not set, the app stays in local-demo mode
 // (src/store.ts), so the preview/demo keeps working with no server.
 
-const BASE = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ?? "";
+const rawBase = import.meta.env.VITE_API_URL as string | undefined;
+const baseUrl = rawBase?.replace(/\/$/, "") ?? "";
+const BASE = /^https?:\/\//i.test(baseUrl) ? baseUrl : "";
 
 export const apiEnabled = BASE.length > 0;
+export const apiConfigIssue = rawBase && !BASE ? "VITE_API_URL is set but not a valid HTTP(S) URL. The app will use local demo mode instead." : "";
 
 const TOKEN_KEY = "machinarc_jwt";
 
