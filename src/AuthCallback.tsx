@@ -45,7 +45,7 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
         const demoSession = { email: "oauth-user@example.com", org: "OAuth User" };
         saveSession(demoSession);
         onSignIn(demoSession);
-        history.replaceState(null, "", "/");
+        history.replaceState(null, "", "/#app");
         return;
       }
 
@@ -55,16 +55,31 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
       );
 
       let sessionData = null;
-      const sessionResult = await authClient.auth.getSession();
-      if (cancelled) return;
-      if (sessionResult.error) {
-        setMessage(
-          `${sessionResult.error.message || "Unable to complete OAuth sign in."}\n` +
-            `Session result: ${JSON.stringify(sessionResult, null, 2)}`,
-        );
-        return;
+      if (codeParam) {
+        const exchangeResult = await authClient.auth.exchangeCodeForSession(codeParam);
+        if (cancelled) return;
+        if (exchangeResult.error) {
+          setMessage(
+            `${exchangeResult.error.message || "Unable to complete OAuth sign in."}\n` +
+              `Exchange result: ${JSON.stringify(exchangeResult, null, 2)}`,
+          );
+          return;
+        }
+        sessionData = exchangeResult.data?.session ?? null;
       }
-      sessionData = sessionResult.data?.session ?? null;
+
+      if (!sessionData) {
+        const sessionResult = await authClient.auth.getSession();
+        if (cancelled) return;
+        if (sessionResult.error) {
+          setMessage(
+            `${sessionResult.error.message || "Unable to complete OAuth sign in."}\n` +
+              `Session result: ${JSON.stringify(sessionResult, null, 2)}`,
+          );
+          return;
+        }
+        sessionData = sessionResult.data?.session ?? null;
+      }
 
       if (!sessionData && hasHashToken) {
         await new Promise((resolve) => setTimeout(resolve, 50));
@@ -85,7 +100,7 @@ export default function AuthCallback({ onSignIn }: { onSignIn: (session: Session
       const nextSession = { email, org: sessionData.user.user_metadata?.org ?? email };
       saveSession(nextSession);
       onSignIn(nextSession);
-      history.replaceState(null, "", "/");
+      history.replaceState(null, "", "/#app");
     };
 
     finish();
